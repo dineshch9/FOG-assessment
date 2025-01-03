@@ -1,0 +1,32 @@
+@import url('https://fonts.googleapis.com/css2?family=Saira+Semi+Condensed:wght@100;200;300;400;500;600;700;800;900&display=swap');
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+@layer utilities {
+    .scrollbar-custom::-webkit-scrollbar {
+      width: 2px; /* Adjust scrollbar width */
+    }
+  
+    .scrollbar-custom::-webkit-scrollbar-track {
+      /* background: #e5e7eb;  */
+      background: #626976; 
+      border-radius: 8px; /* Optional: Rounded track */
+    }
+  
+    .scrollbar-custom::-webkit-scrollbar-thumb {
+      background: #ffffff; /* Tailwind's gray-500 */
+      border-radius: 8px; /* Optional: Rounded thumb */
+    }
+  }
+
+
+
+body{
+    cursor: url('https://cdn.prod.website-files.com/6013fff62154adaa4600f932/60382eca8956d174010393f3_cursor.svg') 16 16, auto;
+    /* background-color: black; */
+    font-size: 80%;
+    font-family: "Saira Semi Condensed";
+
+}
+  
+
