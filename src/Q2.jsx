@@ -1,13 +1,11 @@
 import React, { useEffect, useRef } from "react";
 
-
 const FallingSquares = () => {
   const canvasRef = useRef(null);
-  const numSquares = 30; // Increase number for more squares
-  const trailLength = 10; // Adjust for longer trails
+  const numSquares = 30; // Number of falling squares
+  const trailLength = 10; // Length of trails
   const colorTransitionSpeed = 0.02; // Smoother color transitions
-  const gravity = 0.1; // Simulates downward acceleration
-  const bounceFactor = -0.6; // Rebound effect when hitting the bottom
+  const gravity = 0.1; // Downward acceleration
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -15,7 +13,7 @@ const FallingSquares = () => {
     canvas.width = window.innerWidth;
     canvas.height = window.innerHeight;
 
-    // Random RGB Color Generator
+    // Generate a random RGB color
     const randomColor = () =>
       Array(3)
         .fill()
@@ -25,14 +23,13 @@ const FallingSquares = () => {
     const interpolateColor = (current, target, speed) =>
       current.map((c, i) => c + (target[i] - c) * speed);
 
-    // Square structure with physics
+    // Initialize squares with random positions, velocities, and colors
     const squares = Array(numSquares)
       .fill()
       .map(() => ({
         x: Math.random() * canvas.width,
         y: Math.random() * canvas.height,
-        vx: (Math.random() - 0.5) * 2, // Random horizontal velocity
-        vy: Math.random() * 2, // Random downward velocity
+        vy: Math.random() * 2 + 1, // Random vertical velocity
         color: randomColor(),
         trail: [],
       }));
@@ -54,19 +51,15 @@ const FallingSquares = () => {
       if (square.trail.length > trailLength) square.trail.pop();
 
       // Update position using velocity
-      square.x += square.vx;
       square.y += square.vy;
 
-      // Apply gravity
-      square.vy += gravity;
-
-      // Handle bouncing off edges
-      if (square.y + 10 > canvas.height) {
-        square.y = canvas.height - 10;
-        square.vy *= bounceFactor; // Reverse velocity and dampen
-      }
-      if (square.x + 10 > canvas.width || square.x < 0) {
-        square.vx *= -1; // Reverse horizontal velocity
+      // Respawn square when it hits the bottom
+      if (square.y > canvas.height) {
+        square.y = -10; // Start above the canvas
+        square.x = Math.random() * canvas.width; // Random x-position
+        square.vy = Math.random() * 2 + 1; // Random speed
+        square.trail = []; // Reset trail
+        square.color = randomColor(); // New random color
       }
 
       // Update color
@@ -81,7 +74,7 @@ const FallingSquares = () => {
         drawSquare(square);
       });
 
-      // Update target color randomly when it's close to the current color
+      // Change target color randomly when close to the current color
       if (squares[0].color.every((c, i) => Math.abs(c - targetColor[i]) < 5)) {
         targetColor = randomColor();
       }
