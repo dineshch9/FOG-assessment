@@ -2,10 +2,11 @@ import React, { useEffect, useRef } from "react";
 
 const FallingSquares = () => {
   const canvasRef = useRef(null);
-  const numSquares = 30; // Number of falling squares
-  const trailLength = 10; // Length of trails
-  const colorTransitionSpeed = 0.02; // Smoother color transitions
-  const gravity = 0.1; // Downward acceleration
+  const numSquares = 30; 
+  const trailLength = 30; 
+  const colorTransitionSpeed = 0.02; 
+  const gravity = 0.1; 
+  const columnWidth = 50; // Width of each column
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -23,11 +24,14 @@ const FallingSquares = () => {
     const interpolateColor = (current, target, speed) =>
       current.map((c, i) => c + (target[i] - c) * speed);
 
+    // Calculate the number of columns
+    const numColumns = Math.floor(canvas.width / columnWidth);
+
     // Initialize squares with random positions, velocities, and colors
     const squares = Array(numSquares)
       .fill()
       .map(() => ({
-        x: Math.random() * canvas.width,
+        x: Math.floor(Math.random() * numColumns) * columnWidth + columnWidth / 2 - 5, // Centered in column
         y: Math.random() * canvas.height,
         vy: Math.random() * 2 + 1, // Random vertical velocity
         color: randomColor(),
@@ -35,6 +39,27 @@ const FallingSquares = () => {
       }));
 
     let targetColor = randomColor();
+
+    const drawGrid = () => {
+      ctx.strokeStyle = "rgba(200, 200, 200, 0.5)";
+      ctx.lineWidth = 1;
+
+      // Draw vertical lines
+      for (let i = 0; i <= canvas.width; i += columnWidth) {
+        ctx.beginPath();
+        ctx.moveTo(i, 0);
+        ctx.lineTo(i, canvas.height);
+        ctx.stroke();
+      }
+
+      // Draw horizontal lines (optional)
+      for (let i = 0; i <= canvas.height; i += columnWidth) {
+        ctx.beginPath();
+        ctx.moveTo(0, i);
+        ctx.lineTo(canvas.width, i);
+        ctx.stroke();
+      }
+    };
 
     const drawSquare = (square) => {
       square.trail.forEach((pos, i) => {
@@ -56,7 +81,7 @@ const FallingSquares = () => {
       // Respawn square when it hits the bottom
       if (square.y > canvas.height) {
         square.y = -10; // Start above the canvas
-        square.x = Math.random() * canvas.width; // Random x-position
+        square.x = Math.floor(Math.random() * numColumns) * columnWidth + columnWidth / 2 - 5; // Centered in a random column
         square.vy = Math.random() * 2 + 1; // Random speed
         square.trail = []; // Reset trail
         square.color = randomColor(); // New random color
@@ -68,6 +93,9 @@ const FallingSquares = () => {
 
     const loop = () => {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      // Draw the grid
+      drawGrid();
 
       squares.forEach((square) => {
         updateSquare(square);
