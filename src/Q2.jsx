@@ -6,7 +6,7 @@ const FallingSquares = () => {
   const trailLength = 30; 
   const colorTransitionSpeed = 0.02; 
   const gravity = 0.1; 
-  const columnWidth = 50; // Width of each column
+  const columnWidth = 50; 
 
   useEffect(() => {
     const canvas = canvasRef.current;
